@@ -1,7 +1,6 @@
 //@ts-ignore
 const meta = {
   page: {
-    isHidden: true,
-    isLazy: false,
+    name: '測試',
   },
 }

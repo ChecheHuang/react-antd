@@ -1,22 +1,18 @@
-import { env } from '@/api/env'
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-const Home = () => {
+const Page: React.FC = () => {
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    navigate('/antd')
+  }, [navigate])
+
   return (
-    <button
-      onClick={() => {
-        env(import.meta.env)
-          .then((res) => {
-            console.log(res.data)
-          })
-          .catch((err) => {
-            console.error(err)
-          })
-      }}
-      className="shadow-md font-bold underline "
-    >
-      Hello world!
-    </button>
+    <>
+      <div>page</div>
+    </>
   )
 }
 
-export default Home
+export default Page
