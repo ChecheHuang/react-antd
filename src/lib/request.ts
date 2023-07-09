@@ -19,10 +19,8 @@ const request: AxiosInstance = axios.create({
 
 request.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token')
-    if (config && config.headers && token) {
-      config.headers.token = token
-    }
+    config.headers['authorization'] =
+      'Bearer ' + localStorage.getItem('token') || ''
     return config
   },
   (error: AxiosError) => {

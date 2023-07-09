@@ -1,9 +1,12 @@
 import { Button, Tabs, Collapse, Card, Form, Input } from 'antd'
 import { AutoComplete } from 'antd'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { DataChangeInfoType } from '../page'
 import FormTemplate from '@/components/form/FormTemplate'
 import Group from '@/components/Group'
+import { label } from '@/api/label'
+import { useQuery } from '@tanstack/react-query'
+import { useUpdateEffect } from '@/hooks/useHook'
 
 interface FilterLayoutProps {
   setDataChangeInfo: React.Dispatch<React.SetStateAction<DataChangeInfoType>>
@@ -17,11 +20,29 @@ const FilterLayout: React.FC<FilterLayoutProps> = ({ setDataChangeInfo }) => {
     form.resetFields()
     setDataChangeInfo({ page: 1, size: 10 })
   }
-  const tabsArr = ['All', 'male', 'female']
+  const tabsArr = ['所有客戶', '新客戶', '舊客戶', '潛在客戶']
+  const { data: labelData } = useQuery({
+    queryKey: ['label'],
+    queryFn: () => label(),
+  })
+  const optionsArr = useMemo(() => {
+    const arr =
+      labelData?.data.map((item) => ({ value: item.label_name })) || []
+    return arr
+  }, [labelData?.data])
+  useUpdateEffect(() => {
+    setOptions(optionsArr)
+  }, [optionsArr])
 
   const onFinish = (values: DataChangeInfoType) => {
+    const newState = { ...values }
+    for (const item in values) {
+      if (!values[item]) {
+        delete newState[item]
+      }
+    }
     setDataChangeInfo((prev) => {
-      return { ...prev, ...values }
+      return { ...prev, ...newState }
     })
   }
   return (
@@ -41,7 +62,8 @@ const FilterLayout: React.FC<FilterLayoutProps> = ({ setDataChangeInfo }) => {
                   onChange={(activeKey) => {
                     setDataChangeInfo((prev) => {
                       const newState = { ...prev }
-                      newState['sex'] = activeKey
+                      newState['cus_status'] =
+                        activeKey === '所有客戶' ? '' : activeKey
                       return newState
                     })
                   }}
@@ -59,28 +81,28 @@ const FilterLayout: React.FC<FilterLayoutProps> = ({ setDataChangeInfo }) => {
                 <>
                   <FormTemplate form={form} onFinish={onFinish}>
                     <Group custom>
-                      <Form.Item name="name">
+                      <Form.Item name="label_name">
                         <AutoComplete
                           options={options}
-                          onSelect={(text) => {
-                            // setOptions(() =>
-                            //   [...optionArr].filter((item) =>
-                            //     item.value.includes(text)
-                            //   )
-                            // )
-                          }}
-                          onSearch={(text) => {
-                            // setOptions(() =>
-                            //   [...optionArr].filter((item) =>
-                            //     item.value.includes(text)
-                            //   )
-                            // )
-                          }}
-                          placeholder="姓名"
+                          onSelect={(text) =>
+                            setOptions(
+                              [...optionsArr].filter((item) =>
+                                item.value.includes(text)
+                              )
+                            )
+                          }
+                          onSearch={(text) =>
+                            setOptions(
+                              [...optionsArr].filter((item) =>
+                                item.value.includes(text)
+                              )
+                            )
+                          }
+                          placeholder="標籤"
                         />
                       </Form.Item>
-                      <Form.Item name="email">
-                        <Input placeholder="Email" />
+                      <Form.Item name="cus_number">
+                        <Input placeholder="電話" />
                       </Form.Item>
                     </Group>
 

@@ -1,14 +1,14 @@
 import { Form, FormProps } from 'antd'
-import { SizeType, useTheme } from '@/provider/ThemeProvider'
+import { useSelector } from '@/store'
+import { SizeType } from '@/store/modules/themeSlice'
 
 interface TemplateFormProps extends FormProps {
   children: React.ReactNode
 }
 
 const FormTemplate: React.FC<TemplateFormProps> = ({ children, ...rest }) => {
-  const {
-    state: { size },
-  } = useTheme()
+  const { size } = useSelector((state) => state.theme)
+
   return (
     <Form
       labelWrap

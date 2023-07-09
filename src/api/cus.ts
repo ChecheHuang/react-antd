@@ -1,7 +1,7 @@
 import request from '@/lib/request'
 
 export interface CusResponse {
-  id: number
+  key: number
   cus_name: string
   cus_number: string
   cus_email: string
@@ -21,5 +21,9 @@ interface LabelName {
 }
 
 export const cus = (data: { page?: number; size?: number } = {}) => {
-  return request.get<{ data: CusResponse[]; total: number }>('/cus/index', data)
+  return request.get<{ data: CusResponse[]; total: number }>('/cus', data)
+}
+
+export const cusDelete = (id: number) => {
+  return request.delete(`/cus/${id}`)
 }

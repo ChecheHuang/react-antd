@@ -41,6 +41,7 @@ const actions = {
 }
 export default defineConfig(({ mode = 'default' }) => {
   const extendConfig = actions[mode] ? actions[mode] : actions['development']
+  console.log(mergeObjects(baseConfig, extendConfig))
   return mergeObjects(baseConfig, extendConfig)
 })
 function mergeObjects(obj1, obj2) {

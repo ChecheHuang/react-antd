@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils'
-import { useTheme } from '@/provider/ThemeProvider'
 import { HTMLAttributes, useMemo } from 'react'
+import { useSelector } from '@/store'
 
 interface FromGroupProps extends HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode
@@ -16,9 +16,7 @@ const Group: React.FC<FromGroupProps> = ({
   custom = false,
   ...rest
 }) => {
-  const {
-    state: { size },
-  } = useTheme()
+  const { size } = useSelector((state) => state.theme)
 
   const formGridCol = useMemo(() => {
     if (size === 'small') return 'grid-cols-4'

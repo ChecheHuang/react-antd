@@ -6,7 +6,7 @@ function readMeta(filePath) {
   const regex = /\/([^/]+)$/
   const match = filePath.match(regex)
   const lastSegment = match ? match[1] : null
-  const metaPath = '../views' + filePath.replace(regex, '/meta.js')
+  const metaPath = '../views' + filePath.replace(regex, '/meta.ts')
 
   return new Promise((resolve) => {
     fs.readFile(path.join(__dirname, metaPath), 'utf8', (err, data) => {
@@ -100,6 +100,9 @@ async function printDirectoryContents(
       if (!meta.label) {
         meta.label = meta.name ? meta.name : routePath
       }
+      if (!meta.name) {
+        meta.name = meta.label ? meta.label : routePath
+      }
       const item = {
         routePath,
         filePath,
@@ -110,6 +113,7 @@ async function printDirectoryContents(
       if (routePath === '/404') {
         item.meta = {
           label: 'Not Found',
+          name: 'Not Found',
           isHidden: true,
         }
         item.routePath = '/*'
@@ -222,11 +226,21 @@ import ${component} from "${path}"`
   const output =
     initOutputString +
     `
-const router = ${JSON.stringify(result, null, 2)
+const router: Route[] = ${JSON.stringify(result, null, 2)
       .replace(/"LazyLoad\(.*?\)"/g, (match) => match.replace(/"/g, ''))
       .replace(/"(<[^>]+>)"/g, '$1')
       .replace(/("icon":\s*)"([^"]*)"/g, '$1<$2/>')}
 export default router
+export interface Route {
+  path: string
+  element: JSX.Element
+  name: string
+  label: string
+  icon?: JSX.Element
+  children?: Route[]
+  isHidden?: boolean
+}
+
 `
   const targetFile = '../router/router.tsx'
   const targetPath = path.resolve(__dirname, targetFile)

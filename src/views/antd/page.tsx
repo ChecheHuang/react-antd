@@ -1,4 +1,4 @@
-import { CusResponse } from '@/api/fake'
+import { CusResponse, cus, cusDelete } from '@/api/cus'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { Input, Table } from 'antd'
@@ -26,26 +26,29 @@ export interface DataChangeInfoType extends AnyObject {
   sort?: 'age'
   order?: SortOrder
 }
-
+const width = 100
 const Home = () => {
   const [dataChangeInfo, setDataChangeInfo] = useState<DataChangeInfoType>({
     page: 1,
     size: 10,
   })
-  const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([])
-  // const { status, error, data } = useQuery({
-  //   queryKey: ['table', { dataChangeInfo }],
-  //   keepPreviousData: true,
-  //   queryFn: () => fakePost(dataChangeInfo),
-  // })
+  const [selectedRows, setSelectRows] = useState<string[]>([])
+  const { status, error, data, refetch } = useQuery({
+    queryKey: ['table', { dataChangeInfo }],
+    keepPreviousData: true,
+    queryFn: () => cus(dataChangeInfo),
+  })
   const queryClient = useQueryClient()
-  // const deleteMutation = useMutation({
-  //   mutationFn: fakeDelete,
-  //   onSuccess: (data) => {
-  //     queryClient.setQueryData(['table', data], data)
-  //     queryClient.invalidateQueries(['id'], { exact: true })
-  //   },
-  // })
+
+  const deleteMutation = useMutation({
+    mutationFn: cusDelete,
+    onSuccess: (data) => {
+      console.log(data)
+      toast.success('刪除成功')
+      refetch()
+      queryClient.invalidateQueries(['table'], { exact: true })
+    },
+  })
 
   const { windowHeight } = useWindowInfo()
   const navigate = useNavigate()
@@ -61,7 +64,6 @@ const Home = () => {
     const singleSorter = sorter as SorterResult<CusResponse>
     const { columnKey, order } = singleSorter
     const { action } = extra
-    // console.log(filters)
     const actions = new Map([
       ['paginate', () => setDataChangeInfo({ page: current, size: pageSize })],
       [
@@ -95,16 +97,23 @@ const Home = () => {
 
   const columns: ColumnsType<CusResponse> = [
     {
+      title: 'id',
+      width,
+      dataIndex: 'key',
+      key: 'key',
+      fixed: 'left',
+    },
+    {
       title: '姓名',
-      width: 50,
+      width,
       dataIndex: 'cus_name',
       key: 'cus_name',
       fixed: 'left',
       filterDropdown: (props: FilterDropdownProps) => {
         const { selectedKeys, setSelectedKeys, confirm, clearFilters } = props
         const handleReset = () => {
-          clearFilters?.() // 清空篩選條件，加上 Optional Chaining
-          confirm({ closeDropdown: true }) // 關閉下拉框
+          clearFilters?.()
+          confirm({ closeDropdown: true })
           setDataChangeInfo({ page: 1, size: 10 })
         }
         return (
@@ -141,22 +150,22 @@ const Home = () => {
     },
     {
       title: '電話',
-      width: 150,
+      width,
       dataIndex: 'cus_number',
       key: 'cus_number',
     },
     {
-      title: 'Email',
-      width: 70,
-      dataIndex: 'cus_email',
-      key: 'cus_email',
+      title: '年齡',
+      dataIndex: 'cus_age',
+      key: 'cus_age',
+      width,
       sorter: true,
     },
     {
-      title: '身分證字號',
-      dataIndex: 'cus_idnumber',
-      key: 'cus_idnumber',
-      width: 150,
+      title: '狀態',
+      dataIndex: 'cus_status',
+      key: 'cus_status',
+      width,
     },
     {
       title: '大頭照',
@@ -167,17 +176,48 @@ const Home = () => {
       },
     },
     {
-      title: '性別',
-      dataIndex: 'sex',
-      key: 'sex',
-      width: 150,
+      title: '標籤',
+      key: 'label_names',
+      width: 100,
+      render: (_, { label_names }) => {
+        return label_names.map((item) => {
+          return <div key={item.label_name}>{item.label_name}</div>
+        })
+      },
     },
     {
-      title: '表情符號',
-      dataIndex: 'emoji',
-      key: 'emoji',
-      width: 70,
+      title: 'Email',
+      width,
+      dataIndex: 'cus_email',
+      key: 'cus_email',
     },
+    {
+      title: '身分證字號',
+      dataIndex: 'cus_idnumber',
+      key: 'cus_idnumber',
+      width,
+    },
+    {
+      title: '生日',
+      dataIndex: 'cus_birthday',
+      key: 'cus_birthday',
+      width,
+    },
+
+    {
+      title: '備註',
+      dataIndex: 'cus_remark',
+      key: 'cus_remark',
+      width,
+    },
+
+    {
+      title: '等級',
+      dataIndex: 'cus_level',
+      key: 'cus_level',
+      width,
+    },
+
     {
       title: '操作',
       key: 'operation',
@@ -205,29 +245,14 @@ const Home = () => {
             </ExtendedButton>
             <ExtendedButton
               onClick={() => {
-                console.log(props)
+                console.log(props.key)
+                deleteMutation.mutate(props.key)
               }}
               type="primary"
               danger
             >
               刪除
             </ExtendedButton>
-            {/* <Popconfirm
-              title="是否刪除"
-              description="Are you sure to delete this task?"
-              placement="left"
-              onConfirm={() => {
-                console.log(props)
-                fakeDelete().then((res) => {
-                  console.log(res)
-                })
-              }}
-              onCancel={() => {
-                toast.error('取消刪除')
-              }}
-              okText="Yes"
-              cancelText="No"
-            ></Popconfirm> */}
           </DropdownButton>
         )
       },
@@ -236,12 +261,8 @@ const Home = () => {
 
   const rowSelection = {
     onChange: (selectedRowKeys: React.Key[], selectedRows: CusResponse[]) => {
-      setSelectedKeys(selectedRowKeys)
-      // console.log(
-      //   `selectedRowKeys: ${selectedRowKeys}`,
-      //   'selectedRows: ',
-      //   selectedRows
-      // )
+      console.log(selectedRows)
+      setSelectRows(selectedRows.map((item) => item.cus_name))
     },
     getCheckboxProps: (record: CusResponse) => ({
       disabled: record.cus_name.includes('S'),
@@ -249,7 +270,7 @@ const Home = () => {
     }),
   }
 
-  // if (error) alert(error)
+  if (error) alert(error)
   return (
     <Wrapper>
       <MyCard>
@@ -259,8 +280,8 @@ const Home = () => {
             type="primary"
             danger
             onClick={() => {
-              console.log(selectedKeys)
-              toast.info(selectedKeys)
+              console.log(selectedRows)
+              toast.info(JSON.stringify(selectedRows, null, 2))
             }}
           >
             刪除
@@ -274,7 +295,7 @@ const Home = () => {
             新增
           </ExtendedButton>
         </div>
-        {/* <Table
+        <Table
           size="small"
           onChange={handleChange}
           columns={columns}
@@ -292,7 +313,7 @@ const Home = () => {
             type: 'checkbox',
             ...rowSelection,
           }}
-        /> */}
+        />
       </MyCard>
     </Wrapper>
   )

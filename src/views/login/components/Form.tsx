@@ -3,16 +3,16 @@ import { Button, Form, Input } from 'antd'
 import { QqOutlined, YahooOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import { ValidateErrorEntity } from 'rc-field-form/lib/interface'
+import { login } from '@/api/auth'
 
 const LoginForm: React.FC = () => {
   const navigate = useNavigate()
-  const onFinish = async (values: { username: string; password: string }) => {
-    localStorage.setItem(
-      'token',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJuYW1lIjoiQ2FybCIsInRpbWUiOiIyMDIzLzA3LzA3IDA5OjA0OjM5IiwiaWF0IjoxNjg4NjkxODc5fQ.7ZqE7YAOQkukJanSAerXvw4GOhJndqwma9phk3qGLi8'
-    )
+  const onFinish = async (values: { name: string; password: string }) => {
+    login(values).then((res) => {
+      const token = res.data.token
+      localStorage.setItem('token', token)
+    })
     navigate('/antd')
-    console.log(values)
   }
 
   const onFinishFailed = (errorInfo: ValidateErrorEntity) => {
@@ -28,8 +28,9 @@ const LoginForm: React.FC = () => {
         autoComplete="off"
       >
         <Form.Item
-          name="username"
+          name="name"
           rules={[{ required: true, message: '輸入使用者' }]}
+          initialValue="Carl"
         >
           <Input
             autoComplete="username"
@@ -41,6 +42,7 @@ const LoginForm: React.FC = () => {
         <Form.Item
           name="password"
           rules={[{ required: true, message: '輸入密碼' }]}
+          initialValue="123456"
         >
           <Input.Password
             autoComplete="current-password"

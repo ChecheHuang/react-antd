@@ -3,8 +3,6 @@ import { BrowserRouter } from 'react-router-dom'
 import { ConfigProvider } from 'antd'
 import zhTW from 'antd/es/locale/zh_TW'
 import router from '@/router/router'
-import { ThemeProvider } from './provider/ThemeProvider'
-import { MessageProvider } from './provider/MessageProvider'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { Provider } from 'react-redux'
@@ -29,14 +27,10 @@ function App() {
         }}
       >
         <BrowserRouter>
-          <MessageProvider>
-            <ThemeProvider>
-              <QueryClientProvider client={queryClient}>
-                <Routes />
-                <ReactQueryDevtools />
-              </QueryClientProvider>
-            </ThemeProvider>
-          </MessageProvider>
+          <QueryClientProvider client={queryClient}>
+            <Routes />
+            {/* <ReactQueryDevtools /> */}
+          </QueryClientProvider>
         </BrowserRouter>
       </ConfigProvider>
     </Provider>

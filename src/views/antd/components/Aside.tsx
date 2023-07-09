@@ -3,63 +3,47 @@ import {
   AppstoreOutlined,
   ContainerOutlined,
   DesktopOutlined,
+  FileOutlined,
   MailOutlined,
   PieChartOutlined,
+  TeamOutlined,
+  UserOutlined,
 } from '@ant-design/icons'
 import type { MenuProps } from 'antd'
 import { Menu } from 'antd'
 import { cn } from '@/lib/utils'
 import router from '@/router/router'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 type MenuItem = Required<MenuProps>['items'][number]
 
-function getItem(
+function item(
   label: React.ReactNode,
   key: React.Key,
   icon?: React.ReactNode,
-  children?: MenuItem[],
-  type?: 'group'
+  children?: MenuItem[]
 ): MenuItem {
   return {
     key,
     icon,
     children,
     label,
-    type,
   } as MenuItem
 }
-
-const items: MenuItem[] = [
-  getItem('Option 1', '1', <PieChartOutlined />),
-  getItem('Option 2', '2', <DesktopOutlined />),
-  getItem('Option 3', '3', <ContainerOutlined />),
-
-  getItem('Navigation One', 'sub1', <MailOutlined />, [
-    getItem('Option 5', '5'),
-    getItem('Option 6', '6'),
-    getItem('Option 7', '7'),
-    getItem('Option 8', '8'),
+const menu: MenuItem[] = [
+  item('頁面 1', '/page1', <PieChartOutlined />),
+  item('頁面 2', '/page2', <DesktopOutlined />),
+  item('頁面 3', 'page3', <UserOutlined />, [
+    item('頁面 301', '/page3/page301'),
+    item('頁面 302', '/page3/page302'),
+    item('頁面 303', '/page3/page303'),
   ]),
-
-  getItem('Navigation Two', 'sub2', <AppstoreOutlined />, [
-    getItem('Option 9', '9'),
-    getItem('Option 10', '10'),
-
-    getItem('Submenu', 'sub3', null, [
-      getItem('Option 11', '11'),
-      getItem('Option 12', '12'),
-    ]),
+  item('頁面 4', 'page4', <TeamOutlined />, [
+    item('頁面 401', '/page4/page401'),
+    item('頁面 402', '/page4/page402'),
+    item('頁面 403', '/page4/page403'),
   ]),
-  getItem('Option 1', '56', <PieChartOutlined />),
-  getItem('Option 2', '21', <DesktopOutlined />),
-  getItem('Option 3', '31', <ContainerOutlined />),
-  getItem('Option 1', '55', <PieChartOutlined />),
-  getItem('Option 2', '22', <DesktopOutlined />),
-  getItem('Option 3', '32', <ContainerOutlined />),
-  getItem('Option 1', '13', <PieChartOutlined />),
-  getItem('Option 2', '23', <DesktopOutlined />),
-  getItem('Option 3', '33', <ContainerOutlined />),
+  item('Files', '9', <FileOutlined />),
 ]
 interface AsideProps {
   collapsed: boolean
@@ -69,6 +53,16 @@ const Aside: React.FC<AsideProps> = ({ collapsed }) => {
   // console.log(router[0]['children'])
   // const [menuItems] = useState<AntdRouterItem[]>(router)
 
+  const navigateTo = useNavigate()
+  const currentRoute = useLocation()
+  const [openKeys, setOpenKeys] = useState<string[]>([])
+  const handleOpenChange: MenuProps['onOpenChange'] = (keys: string[]) => {
+    setOpenKeys([keys[keys.length - 1]])
+  }
+
+  const menuClick = (e: { key: string }) => {
+    navigateTo(e.key)
+  }
   return (
     <div
       className={cn(
@@ -84,13 +78,16 @@ const Aside: React.FC<AsideProps> = ({ collapsed }) => {
           )}
         </div>
       </Link>
+
       <Menu
-        defaultSelectedKeys={['1']}
-        defaultOpenKeys={['']}
-        mode="inline"
         theme="dark"
+        defaultSelectedKeys={[currentRoute.pathname]}
+        mode="inline"
+        items={menu}
+        onClick={menuClick}
+        openKeys={openKeys}
         inlineCollapsed={collapsed}
-        items={items}
+        onOpenChange={handleOpenChange}
       />
     </div>
   )

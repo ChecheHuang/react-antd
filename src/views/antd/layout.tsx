@@ -43,7 +43,7 @@ export function useMainRef() {
 export function useMessage() {
   const { messageApi } = useOutletContext<ContextType>()
   if (!messageApi) {
-    throw new Error('useMessage must be used within a MessageProvider')
+    throw new Error('useMessage must be used within a layoutChildren')
   }
   return messageApi
 }
