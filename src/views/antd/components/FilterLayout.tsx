@@ -7,6 +7,7 @@ import Group from '@/components/Group'
 import { label } from '@/api/label'
 import { useQuery } from '@tanstack/react-query'
 import { useUpdateEffect } from '@/hooks/useHook'
+import { SizeType } from '@/store/redux/modules/themeSlice'
 
 interface FilterLayoutProps {
   setDataChangeInfo: React.Dispatch<React.SetStateAction<DataChangeInfoType>>
@@ -79,8 +80,12 @@ const FilterLayout: React.FC<FilterLayoutProps> = ({ setDataChangeInfo }) => {
               ),
               children: (
                 <>
-                  <FormTemplate form={form} onFinish={onFinish}>
-                    <Group custom>
+                  <FormTemplate
+                    size={SizeType.small}
+                    form={form}
+                    onFinish={onFinish}
+                  >
+                    <Group size={SizeType.small} custom>
                       <Form.Item name="label_name">
                         <AutoComplete
                           options={options}
@@ -103,6 +108,9 @@ const FilterLayout: React.FC<FilterLayoutProps> = ({ setDataChangeInfo }) => {
                       </Form.Item>
                       <Form.Item name="cus_number">
                         <Input placeholder="電話" />
+                      </Form.Item>
+                      <Form.Item name="cus_name">
+                        <Input placeholder="姓名" />
                       </Form.Item>
                     </Group>
 

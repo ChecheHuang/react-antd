@@ -1,68 +1,45 @@
-import React, { useState } from 'react'
-import {
-  AppstoreOutlined,
-  ContainerOutlined,
-  DesktopOutlined,
-  FileOutlined,
-  MailOutlined,
-  PieChartOutlined,
-  TeamOutlined,
-  UserOutlined,
-} from '@ant-design/icons'
+import React, { useEffect, useState } from 'react'
 import type { MenuProps } from 'antd'
-import { Menu } from 'antd'
+import { Image, Menu } from 'antd'
 import { cn } from '@/lib/utils'
-import router from '@/router/router'
+import router, { Route } from '@/router/router'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 type MenuItem = Required<MenuProps>['items'][number]
 
-function item(
-  label: React.ReactNode,
-  key: React.Key,
-  icon?: React.ReactNode,
-  children?: MenuItem[]
-): MenuItem {
-  return {
-    key,
-    icon,
-    children,
-    label,
-  } as MenuItem
-}
-const menu: MenuItem[] = [
-  item('頁面 1', '/page1', <PieChartOutlined />),
-  item('頁面 2', '/page2', <DesktopOutlined />),
-  item('頁面 3', 'page3', <UserOutlined />, [
-    item('頁面 301', '/page3/page301'),
-    item('頁面 302', '/page3/page302'),
-    item('頁面 303', '/page3/page303'),
-  ]),
-  item('頁面 4', 'page4', <TeamOutlined />, [
-    item('頁面 401', '/page4/page401'),
-    item('頁面 402', '/page4/page402'),
-    item('頁面 403', '/page4/page403'),
-  ]),
-  item('Files', '9', <FileOutlined />),
-]
 interface AsideProps {
   collapsed: boolean
 }
+const storageSelectKeys = JSON.parse(
+  sessionStorage.getItem('selectKeys') || '[]'
+)
+const storageOpenKeys = JSON.parse(sessionStorage.getItem('openKeys') || '[]')
 const Aside: React.FC<AsideProps> = ({ collapsed }) => {
-  // console.log(items)
-  // console.log(router[0]['children'])
-  // const [menuItems] = useState<AntdRouterItem[]>(router)
-
-  const navigateTo = useNavigate()
+  const navigate = useNavigate()
   const currentRoute = useLocation()
-  const [openKeys, setOpenKeys] = useState<string[]>([])
+  const [selectKeys, setSelectKeys] = useState<string[]>(storageSelectKeys)
+  const [openKeys, setOpenKeys] = useState<string[]>(storageOpenKeys)
+  const { menu, keyArr } = convertRoutesToMenu(router)
   const handleOpenChange: MenuProps['onOpenChange'] = (keys: string[]) => {
-    setOpenKeys([keys[keys.length - 1]])
+    const key = [keys[keys.length - 1]]
+    setOpenKeys(key)
+    sessionStorage.setItem('openKeys', JSON.stringify(key))
   }
-
-  const menuClick = (e: { key: string }) => {
-    navigateTo(e.key)
+  const handleLink: MenuProps['onClick'] = (e) => {
+    navigate(e.key)
+    sessionStorage.setItem('selectKeys', JSON.stringify([e.key]))
+    setSelectKeys([e.key] as string[])
   }
+  useEffect(() => {
+    if (!keyArr.includes(currentRoute.pathname)) {
+      return
+    }
+    sessionStorage.setItem(
+      'selectKeys',
+      JSON.stringify([currentRoute.pathname])
+    )
+    setSelectKeys([currentRoute.pathname] as string[])
+  }, [currentRoute.pathname])
   return (
     <div
       className={cn(
@@ -71,8 +48,8 @@ const Aside: React.FC<AsideProps> = ({ collapsed }) => {
       )}
     >
       <Link to={'/antd'}>
-        <div className="sticky top-0 z-10 flex items-center justify-center gap-3 bg-dark ">
-          <img src="/logo.png" alt="" />
+        <div className="sticky top-0 z-10 flex items-center justify-center gap-3 bg-dark  h-16 ">
+          <Image width={50} src="/logo.png" alt="" />
           {!collapsed && (
             <div className="break-keep text-white ">陽信商店街</div>
           )}
@@ -80,14 +57,14 @@ const Aside: React.FC<AsideProps> = ({ collapsed }) => {
       </Link>
 
       <Menu
-        theme="dark"
-        defaultSelectedKeys={[currentRoute.pathname]}
-        mode="inline"
-        items={menu}
-        onClick={menuClick}
-        openKeys={openKeys}
         inlineCollapsed={collapsed}
+        onClick={handleLink}
         onOpenChange={handleOpenChange}
+        mode="inline"
+        theme="dark"
+        selectedKeys={selectKeys}
+        openKeys={openKeys}
+        items={menu}
       />
     </div>
   )
@@ -95,16 +72,45 @@ const Aside: React.FC<AsideProps> = ({ collapsed }) => {
 
 export default Aside
 
-interface RouterItem {
-  path: string
-  label: string
-  hidden?: boolean
-  element?: React.ReactNode
-  children?: RouterItem[]
-  meta?: { allow: boolean }
-}
-interface AntdRouterItem extends RouterItem {
-  key: string
-  type: string
-  children?: AntdRouterItem[]
+function convertRoutesToMenu(routes: Route[]): {
+  menu: MenuItem[]
+  keyArr: string[]
+} {
+  const keyArr: string[] = []
+
+  function flattenKeysRecursive(routes: Route[]) {
+    routes.forEach((route) => {
+      if (!route.isHidden && !route.path.includes(':')) {
+        if (!keyArr.includes(route.path)) {
+          keyArr.push(route.path)
+        }
+      }
+      if (route.children) {
+        flattenKeysRecursive(route.children)
+      }
+    })
+  }
+
+  const menu = routes.reduce<MenuItem[]>((menu, route) => {
+    if (route.isHidden || route.path.includes(':')) {
+      return menu
+    }
+
+    const { path, label, icon, children } = route
+    const menuItem: MenuItem = {
+      key: children ? path + '/layout' : path,
+      icon,
+      label,
+      ...(children && { children: convertRoutesToMenu(children).menu }),
+    }
+    if (!children) {
+      keyArr.push(path)
+    }
+
+    return [...menu, menuItem]
+  }, [])
+
+  flattenKeysRecursive(routes)
+
+  return { menu, keyArr }
 }

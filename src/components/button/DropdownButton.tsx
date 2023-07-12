@@ -1,5 +1,5 @@
 import { Button, Dropdown } from 'antd'
-import { v4 as uuidv4 } from 'uuid'
+import { v4 as uuid } from 'uuid'
 interface DropdownButtonProps {
   children: React.ReactNode
   content?: React.ReactNode
@@ -11,7 +11,7 @@ const DropdownButton: React.FC<DropdownButtonProps> = ({
 }) => {
   const items = [
     {
-      key: uuidv4(),
+      key: uuid(),
       label: <div className="flex flex-col gap-1">{children}</div>,
     },
   ]

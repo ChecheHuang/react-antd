@@ -1,12 +1,12 @@
 import { cn } from '@/lib/utils'
 import React, { forwardRef, HTMLAttributes } from 'react'
 
-interface WrapperProps extends HTMLAttributes<HTMLDivElement> {
+interface ContainerProps extends HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode
   className?: string
 }
 
-const Wrap: React.ForwardRefRenderFunction<HTMLDivElement, WrapperProps> = (
+const Wrap: React.ForwardRefRenderFunction<HTMLDivElement, ContainerProps> = (
   { children, className, ...rest },
   ref
 ) => {
@@ -17,6 +17,6 @@ const Wrap: React.ForwardRefRenderFunction<HTMLDivElement, WrapperProps> = (
   )
 }
 
-const Wrapper = forwardRef<HTMLDivElement, WrapperProps>(Wrap)
+const Container = forwardRef<HTMLDivElement, ContainerProps>(Wrap)
 
-export default Wrapper
+export default Container

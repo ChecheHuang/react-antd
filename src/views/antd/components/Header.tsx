@@ -1,9 +1,12 @@
 import { cn } from '@/lib/utils'
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons'
 import { UserOutlined } from '@ant-design/icons'
-import { Button } from 'antd'
+import { Button, Dropdown, MenuProps } from 'antd'
 import { Avatar } from 'antd'
 import Breadcrumb from './Breadcrumb'
+import { useSelector } from '@/store/redux'
+import ExtendedButton from '@/components/button/ExtendedButton'
+import { useNavigate } from 'react-router-dom'
 interface HeaderProps {
   toggleCollapsed: () => void
   collapsed: boolean
@@ -15,6 +18,24 @@ const Header: React.FC<HeaderProps> = ({
   collapsed,
   className,
 }) => {
+  const { user } = useSelector((state) => state.user)
+  const navigate = useNavigate()
+  const items: MenuProps['items'] = [
+    {
+      key: '1',
+      label: (
+        <ExtendedButton
+          onClick={() => {
+            localStorage.clear()
+            navigate('/login')
+          }}
+          type="info"
+        >
+          登出
+        </ExtendedButton>
+      ),
+    },
+  ]
   return (
     <header
       className={cn(
@@ -28,7 +49,14 @@ const Header: React.FC<HeaderProps> = ({
         </Button>
         <Breadcrumb />
       </div>
-      <Avatar className="cursor-pointer" size={44} icon={<UserOutlined />} />
+      <Dropdown menu={{ items }} placement="bottomLeft" arrow>
+        <Avatar
+          src={user?.user_avatar}
+          className="cursor-pointer"
+          size={44}
+          icon={<UserOutlined />}
+        />
+      </Dropdown>
     </header>
   )
 }

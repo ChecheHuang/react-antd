@@ -8,9 +8,8 @@ const meta = {
     icon: AppstoreOutlined,
   },
   page: {
-    name: '首頁',
-    label: '首頁',
-    isHidden: false,
+    name: '客戶列表',
+    label: '客戶列表',
     isLazy: false,
     icon: AppstoreOutlined,
   },

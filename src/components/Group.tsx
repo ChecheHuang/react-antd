@@ -1,28 +1,32 @@
 import { cn } from '@/lib/utils'
 import { HTMLAttributes, useMemo } from 'react'
-import { useSelector } from '@/store'
+import { useSelector } from '@/store/redux'
 
 interface FromGroupProps extends HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode
   className?: string
   groupTitle?: string
   custom?: boolean
+  size?: string
 }
 
 const Group: React.FC<FromGroupProps> = ({
   children,
   className,
   groupTitle,
+  size,
   custom = false,
   ...rest
 }) => {
-  const { size } = useSelector((state) => state.theme)
+  const { size: reduxSize } = useSelector((state) => state.theme)
+
+  const groupSize = size ? size : reduxSize
 
   const formGridCol = useMemo(() => {
-    if (size === 'small') return 'grid-cols-4'
-    if (size === 'middle') return 'grid-cols-2'
-    if (size === 'large') return 'grid-cols-1'
-  }, [size])
+    if (groupSize === 'small') return 'grid-cols-4'
+    if (groupSize === 'middle') return 'grid-cols-2'
+    if (groupSize === 'large') return 'grid-cols-1'
+  }, [groupSize])
 
   return (
     <>

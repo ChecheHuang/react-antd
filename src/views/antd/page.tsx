@@ -1,25 +1,25 @@
-import { CusResponse, cus, cusDelete } from '@/api/cus'
+import { CusResponse, cusGet, cusDelete } from '@/api/cus'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { Input, Table } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { useWindowInfo } from '@/hooks/useHook'
-import DropdownButton from '@/components/buttons/DropdownButton'
+import DropdownButton from '@/components/button/DropdownButton'
 import { TableProps } from 'antd/lib/table/InternalTable'
-import ExtendedButton from '@/components/buttons/ExtendedButton'
+import ExtendedButton from '@/components/button/ExtendedButton'
 import type {
   FilterDropdownProps,
   SortOrder,
   SorterResult,
 } from 'antd/lib/table/interface'
 import type { ColumnsType } from 'antd/es/table'
-import MyCard from '../../components/MyCard'
-import { SearchOutlined } from '@ant-design/icons'
+import MyCard from '@/components/MyCard'
+import { ExclamationCircleOutlined, SearchOutlined } from '@ant-design/icons'
 import FilterLayout from './components/FilterLayout'
 import { AnyObject } from '@/types'
-import Wrapper from '@/components/Wrapper'
-import { useMessage } from './layout'
+import Wrapper from '@/components/container/Container'
 import Image from '@/components/Image'
+import { useAntd } from '@/provider/AntdProvider'
 export interface DataChangeInfoType extends AnyObject {
   page: number
   size: number
@@ -33,26 +33,28 @@ const Home = () => {
     size: 10,
   })
   const [selectedRows, setSelectRows] = useState<string[]>([])
-  const { status, error, data, refetch } = useQuery({
+  const { status, error, data } = useQuery({
     queryKey: ['table', { dataChangeInfo }],
     keepPreviousData: true,
-    queryFn: () => cus(dataChangeInfo),
+    queryFn: () => cusGet(dataChangeInfo),
   })
   const queryClient = useQueryClient()
+  const { message, modal } = useAntd()
 
-  const deleteMutation = useMutation({
+  const { mutate: deleteMutation, isLoading } = useMutation({
     mutationFn: cusDelete,
     onSuccess: (data) => {
       console.log(data)
-      toast.success('刪除成功')
-      refetch()
-      queryClient.invalidateQueries(['table'], { exact: true })
+      message?.success(data.message)
+      queryClient.invalidateQueries(['table', { dataChangeInfo }])
+    },
+    onError: (err: Error) => {
+      message?.error('刪除失敗!!' + err?.message || '')
     },
   })
 
   const { windowHeight } = useWindowInfo()
   const navigate = useNavigate()
-  const toast = useMessage()
 
   const handleChange: TableProps<CusResponse>['onChange'] = (
     pagination,
@@ -237,7 +239,8 @@ const Home = () => {
             <ExtendedButton
               onClick={() => {
                 console.log('查看')
-                toast.success('success')
+                message?.success('success')
+                // toast.success('success')
               }}
               type="info"
             >
@@ -245,11 +248,21 @@ const Home = () => {
             </ExtendedButton>
             <ExtendedButton
               onClick={() => {
-                console.log(props.key)
-                deleteMutation.mutate(props.key)
+                // console.log(props.key)
+                modal?.confirm({
+                  title: <div>{props.cus_name}</div>,
+                  icon: <ExclamationCircleOutlined />,
+                  content: '刪除資料不可回復，確認刪除?',
+                  okText: '確認',
+                  cancelText: '取消',
+                  onOk: () => {
+                    deleteMutation(props.key)
+                  },
+                })
               }}
               type="primary"
               danger
+              disabled={isLoading}
             >
               刪除
             </ExtendedButton>
@@ -281,7 +294,7 @@ const Home = () => {
             danger
             onClick={() => {
               console.log(selectedRows)
-              toast.info(JSON.stringify(selectedRows, null, 2))
+              message?.info(JSON.stringify(selectedRows, null, 2))
             }}
           >
             刪除

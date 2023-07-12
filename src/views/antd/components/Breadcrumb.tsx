@@ -6,6 +6,7 @@ const Breadcrumb: React.FC = () => {
   const location = useLocation()
   const pathSnippets = location.pathname.split('/').filter((i) => i)
   const flattenedRouter = flattenRoutes(router)
+  // console.log(flattenedRouter)
   const extraBreadcrumbItems = pathSnippets.map((_, index) => {
     const url = `/${pathSnippets.slice(0, index + 1).join('/')}`
     const { name, icon } = getValueByPath(flattenedRouter, url)
@@ -41,11 +42,14 @@ function getValueByPath(map: Map<RegExp, any>, path: string) {
   }
   return null
 }
+
 function flattenRoutes(
   routes: Route[]
 ): Map<RegExp, { name: string; icon?: JSX.Element }> {
   const flattenedRoutes: Map<RegExp, { name: string; icon?: JSX.Element }> =
     new Map()
+  const delayedRoutes: { path: string; name: string; icon?: JSX.Element }[] = []
+
   routes.forEach((route) => {
     const { path, name, icon, children } = route
     const routeInfo = icon ? { name } : { name, icon }
@@ -56,9 +60,22 @@ function flattenRoutes(
         flattenedRoutes.set(key, value)
       })
     } else {
-      const flattenedPath = new RegExp(`^${path.replace(/:[^/]+/g, '[^/]+')}$`)
-      flattenedRoutes.set(flattenedPath, routeInfo)
+      if (path.includes(':')) {
+        // Route contains a regex pattern, delay processing
+        delayedRoutes.push({ path, ...routeInfo })
+      } else {
+        const flattenedPath = new RegExp(
+          `^${path.replace(/:[^/]+/g, '[^/]+')}$`
+        )
+        flattenedRoutes.set(flattenedPath, routeInfo)
+      }
     }
+  })
+
+  // Process delayed routes
+  delayedRoutes.forEach(({ path, name, icon }) => {
+    const flattenedPath = new RegExp(`^${path.replace(/:[^/]+/g, '[^/]+')}$`)
+    flattenedRoutes.set(flattenedPath, { name, icon })
   })
 
   return flattenedRoutes

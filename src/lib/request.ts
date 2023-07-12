@@ -14,13 +14,19 @@ export interface Result<T> {
 
 const request: AxiosInstance = axios.create({
   baseURL: '/api',
-  timeout: 3000,
+  timeout: 10000,
 })
 
 request.interceptors.request.use(
   (config) => {
-    config.headers['authorization'] =
-      'Bearer ' + localStorage.getItem('token') || ''
+    const data = localStorage.getItem('data')
+    if (data !== null) {
+      const parsedData = JSON.parse(data)
+      const token = parsedData.token || ''
+      if (token) {
+        config.headers['authorization'] = 'Bearer ' + token
+      }
+    }
     return config
   },
   (error: AxiosError) => {

@@ -246,12 +246,36 @@ export interface Route {
   const targetPath = path.resolve(__dirname, targetFile)
   return { output, targetPath }
 }
+function sortArr(arr) {
+  const sortedArr = arr.sort((a, b) => {
+    const aHasBrackets = /\[.*\]/.test(a.filePath)
+    const bHasBrackets = /\[.*\]/.test(b.filePath)
+
+    if (aHasBrackets && !bHasBrackets) {
+      return 1
+    } else if (!aHasBrackets && bHasBrackets) {
+      return -1
+    } else {
+      return 0
+    }
+  })
+  const finalArr = sortedArr.sort((a, b) => {
+    if (a.filePath === '/404/page') {
+      return 1
+    } else if (b.filePath === '/404/page') {
+      return -1
+    } else {
+      return 0
+    }
+  })
+  return finalArr
+}
 
 const createRouter = async () => {
   const { arr, importString } = await createPathArray()
   let initOutput = `import LazyLoad from "./LazyLoad/LazyLoad"\n${importString}`
 
-  const { output, targetPath } = createOutput(arr, initOutput)
+  const { output, targetPath } = createOutput(sortArr(arr), initOutput)
 
   fs.writeFileSync(targetPath, output)
 }

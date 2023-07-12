@@ -2,12 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-$success :green;
-$success-hover :rgb(95, 153, 95, .9);
-$info: rgb(218, 173, 90);
-$info-hover: rgba(204, 180, 132, 0.9);
-
-
 html {
     scroll-behavior: smooth;
 }
@@ -20,26 +14,4 @@ html {
 
 a {
     text-decoration: none;
-}
-
-.button-success {
-    background-color: $success;
-    color: white;
-
-    &:hover {
-        background-color: $success-hover !important;
-        color: white !important;
-        border-color: transparent !important;
-    }
-}
-
-.button-info {
-    background-color: $info;
-    color: white;
-
-    &:hover {
-        background-color: $info-hover !important;
-        color: white !important;
-        border-color: transparent !important;
-    }
 }

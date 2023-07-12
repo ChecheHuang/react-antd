@@ -1,6 +1,6 @@
 import { Radio } from 'antd'
-import { useDispatch, useSelector } from '@/store'
-import { SizeType, changeSize } from '@/store/modules/themeSlice'
+import { useDispatch, useSelector } from '@/store/redux'
+import { SizeType, changeSize } from '@/store/redux/modules/themeSlice'
 const ChangeSizeRadio = () => {
   const dispatch = useDispatch()
   const { size } = useSelector((state) => state.theme)

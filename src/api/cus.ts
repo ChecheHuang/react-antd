@@ -20,7 +20,7 @@ interface LabelName {
   label_name: string
 }
 
-export const cus = (data: { page?: number; size?: number } = {}) => {
+export const cusGet = (data: { page?: number; size?: number } = {}) => {
   return request.get<{ data: CusResponse[]; total: number }>('/cus', data)
 }
 

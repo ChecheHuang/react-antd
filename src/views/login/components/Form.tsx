@@ -4,15 +4,27 @@ import { QqOutlined, YahooOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import { ValidateErrorEntity } from 'rc-field-form/lib/interface'
 import { login } from '@/api/auth'
+import {
+  updateError,
+  updateStart,
+  updateSuccess,
+} from '@/store/redux/modules/userSlice'
+import { useDispatch, useSelector } from '@/store/redux'
 
 const LoginForm: React.FC = () => {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const { pending, error } = useSelector((state) => state.user)
   const onFinish = async (values: { name: string; password: string }) => {
-    login(values).then((res) => {
-      const token = res.data.token
-      localStorage.setItem('token', token)
-    })
-    navigate('/antd')
+    try {
+      dispatch(updateStart())
+      const res = await login(values)
+      dispatch(updateSuccess(res.data))
+      navigate('/antd')
+    } catch (err) {
+      dispatch(updateError())
+      console.log(err)
+    }
   }
 
   const onFinishFailed = (errorInfo: ValidateErrorEntity) => {
@@ -51,7 +63,7 @@ const LoginForm: React.FC = () => {
           />
         </Form.Item>
         <Form.Item>
-          <Button block type="primary" htmlType="submit">
+          <Button loading={pending} block type="primary" htmlType="submit">
             登入
           </Button>
         </Form.Item>

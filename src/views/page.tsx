@@ -6,7 +6,7 @@ const Page: React.FC = () => {
 
   useEffect(() => {
     navigate('/antd')
-  }, [navigate])
+  }, [])
 
   return (
     <>

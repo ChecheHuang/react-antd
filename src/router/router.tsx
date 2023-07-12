@@ -1,4 +1,5 @@
 import LazyLoad from './LazyLoad/LazyLoad'
+import { QqOutlined } from '@ant-design/icons'
 import { AppstoreOutlined } from '@ant-design/icons'
 import { HeatMapOutlined } from '@ant-design/icons'
 
@@ -17,10 +18,16 @@ const router: Route[] = [
       {
         path: '/antd',
         element: <PageAntd />,
-        name: '首頁',
-        label: '首頁',
-        isHidden: false,
+        name: '客戶列表',
+        label: '客戶列表',
         icon: <AppstoreOutlined />,
+      },
+      {
+        path: '/antd/create',
+        element: LazyLoad(import('@/views/antd/create/page')),
+        label: '創建新客戶',
+        icon: <QqOutlined />,
+        name: '創建新客戶',
       },
       {
         path: '/antd/:id',
@@ -47,8 +54,16 @@ const router: Route[] = [
     path: '',
     element: <Page />,
     isHidden: true,
+    icon: <QqOutlined />,
     label: '/',
     name: '/',
+  },
+  {
+    path: '/login',
+    element: LazyLoad(import('@/views/login/page')),
+    isHidden: true,
+    label: '/login',
+    name: '/login',
   },
   {
     path: '/*',
@@ -56,12 +71,6 @@ const router: Route[] = [
     label: 'Not Found',
     name: 'Not Found',
     isHidden: true,
-  },
-  {
-    path: '/login',
-    element: LazyLoad(import('@/views/login/page')),
-    label: '/login',
-    name: '/login',
   },
 ]
 export default router

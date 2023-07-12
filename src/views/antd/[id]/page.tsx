@@ -12,9 +12,9 @@ import {
 } from 'antd'
 import ChangeSizeRadio from '@/components/ChangeSizeRadio'
 import { useParams } from 'react-router-dom'
-import PrevButton from '@/components/buttons/PrevButton'
+import PrevButton from '@/components/button/PrevButton'
 import Group from '@/components/Group'
-import TabWrapper from '@/components/TabWrapper/TabWrapper'
+import TabContainer from '@/components/container/TabContainer/TabContainer'
 import FormTemplate from '@/components/form/FormTemplate'
 import MyCard from '@/components/MyCard'
 
@@ -30,7 +30,7 @@ const Page: React.FC = () => {
   }
 
   return (
-    <TabWrapper>
+    <TabContainer>
       <MyCard>
         <div className=" flex items-center justify-between">
           <h1 className="text-3xl">{id}</h1>
@@ -83,12 +83,10 @@ const Page: React.FC = () => {
           </Group>
 
           <Group id="second" aria-label="第二個" className="h-screen">
-            123
+            <div>second</div>
           </Group>
-          <Group id="three" aria-label="第三個" className="h-screen">
-            <div>123</div>
-            <div>456</div>
-            <div>789</div>
+          <Group id="third" aria-label="第三個" className="h-screen">
+            <div>third</div>
           </Group>
 
           <Form.Item className="col-span-full flex justify-center">
@@ -98,7 +96,7 @@ const Page: React.FC = () => {
           </Form.Item>
         </FormTemplate>
       </MyCard>
-    </TabWrapper>
+    </TabContainer>
   )
 }
 

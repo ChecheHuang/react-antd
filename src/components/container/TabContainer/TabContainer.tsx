@@ -1,9 +1,9 @@
-import useRefScroll from '@/components/TabWrapper/useRefScroll'
+import useRefScroll from '@/components/container/TabContainer/useRefScroll'
 
 import { cn } from '@/lib/utils'
 import { useRef, useState } from 'react'
 import { Switch } from 'antd'
-import Wrapper from '../Wrapper'
+import Container from '../Container'
 interface TabContainerProps {
   mode?: 'horizontal' | 'vertical'
   className?: string
@@ -13,7 +13,7 @@ interface TabContainerProps {
   isSwitch?: boolean
 }
 
-const TabWrapper: React.FC<TabContainerProps> = ({
+const TabContainer: React.FC<TabContainerProps> = ({
   className,
   tabClassName,
   tabsClassName,
@@ -70,7 +70,7 @@ const TabWrapper: React.FC<TabContainerProps> = ({
           />
         )}
       </nav>
-      <Wrapper
+      <Container
         ref={containerRef}
         className={cn(
           'h-[calc(100vh-6rem)] overflow-y-auto scroll-smooth  scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-dark ',
@@ -79,9 +79,9 @@ const TabWrapper: React.FC<TabContainerProps> = ({
         )}
       >
         {children}
-      </Wrapper>
+      </Container>
     </>
   )
 }
 
-export default TabWrapper
+export default TabContainer

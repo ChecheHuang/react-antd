@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import themeReducer from './modules/themeSlice'
+import userReducer from './modules/userSlice'
 import {
   TypedUseSelectorHook,
   useDispatch as originDispatch,
@@ -9,6 +10,7 @@ import {
 const store = configureStore({
   reducer: {
     theme: themeReducer,
+    user: userReducer,
   },
 })
 
