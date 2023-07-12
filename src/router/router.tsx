@@ -51,10 +51,41 @@ const router: Route[] = [
     ],
   },
   {
+    path: '/route2',
+    element: LazyLoad(import('@/views/(ignore)/route2/layout')),
+    label: 'subMenu',
+    name: 'subMenu',
+    children: [
+      {
+        path: '/route2',
+        element: LazyLoad(import('@/views/(ignore)/route2/page')),
+        name: 'route2',
+        label: 'route2',
+      },
+      {
+        path: '/route2/page1',
+        element: LazyLoad(import('@/views/(ignore)/route2/page1/page')),
+        name: 'page1',
+        label: 'page1',
+      },
+      {
+        path: '/route2/page2',
+        element: LazyLoad(import('@/views/(ignore)/route2/page2/page')),
+        name: 'page2',
+        label: 'page2',
+      },
+      {
+        path: '/route2/page3',
+        element: LazyLoad(import('@/views/(ignore)/route2/page3/page')),
+        name: 'page3',
+        label: 'page3',
+      },
+    ],
+  },
+  {
     path: '',
     element: <Page />,
     isHidden: true,
-    icon: <QqOutlined />,
     label: '/',
     name: '/',
   },
