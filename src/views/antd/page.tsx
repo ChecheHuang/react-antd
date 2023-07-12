@@ -283,7 +283,7 @@ const Home = () => {
     }),
   }
 
-  if (error) alert(error)
+  if (error) message.error(JSON.stringify(error.message, null, 2))
   return (
     <Wrapper>
       <MyCard>
