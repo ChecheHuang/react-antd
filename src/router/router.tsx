@@ -1,4 +1,5 @@
 import LazyLoad from './LazyLoad/LazyLoad'
+import { DownCircleOutlined } from '@ant-design/icons'
 import { QqOutlined } from '@ant-design/icons'
 import { AppstoreOutlined } from '@ant-design/icons'
 import { HeatMapOutlined } from '@ant-design/icons'
@@ -53,8 +54,9 @@ const router: Route[] = [
   {
     path: '/route2',
     element: LazyLoad(import('@/views/(ignore)/route2/layout')),
-    label: 'subMenu',
-    name: 'subMenu',
+    label: '選單範例',
+    icon: <DownCircleOutlined />,
+    name: '選單範例',
     children: [
       {
         path: '/route2',

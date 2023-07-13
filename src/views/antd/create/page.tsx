@@ -23,14 +23,14 @@ const Page: React.FC = () => {
         onNext={handleNext}
         onChange={onChange}
       >
-        <StepContainer.Item title="test">
-          <div>test</div>
+        <StepContainer.Item title="step1">
+          <div>step1</div>
         </StepContainer.Item>
-        <StepContainer.Item title="test2">
-          <div>test2</div>
+        <StepContainer.Item title="step2">
+          <div>step2</div>
         </StepContainer.Item>
-        <StepContainer.Item title="test3">
-          <div>test3</div>
+        <StepContainer.Item title="step3">
+          <div>step3</div>
         </StepContainer.Item>
       </StepContainer>
     </>
