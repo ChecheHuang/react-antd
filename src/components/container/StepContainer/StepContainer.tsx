@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils'
 import { Steps } from 'antd'
 import { memo, useEffect, useMemo, useRef } from 'react'
 import { FC, ReactNode, isValidElement, Children } from 'react'
+import FixedButton from '@/components/button/FixedButton'
 
 interface StepContainerProps {
   stepClassName?: string
@@ -16,6 +17,8 @@ interface StepContainerProps {
   onChange?: (value: number) => void
   prevButton?: ReactNode
   nextButton?: ReactNode
+  isFixButton?: boolean
+  isFixButtonAlwaysShow?: boolean
 }
 
 interface Step {
@@ -35,6 +38,8 @@ const StepContainer: FC<StepContainerProps> & {
   stepClassName,
   prevButton,
   nextButton,
+  isFixButton,
+  isFixButtonAlwaysShow,
 }) => {
   const ref = useRef<HTMLDivElement>(null)
 
@@ -74,6 +79,8 @@ const StepContainer: FC<StepContainerProps> & {
         />
       </div>
       <Container
+        isFixButton={isFixButton}
+        isFixButtonAlwaysShow={isFixButtonAlwaysShow}
         ref={ref}
         className={cn(
           'h-[calc(100vh-6rem)] overflow-y-auto scroll-smooth  scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-dark ',

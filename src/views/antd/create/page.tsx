@@ -18,6 +18,8 @@ const Page: React.FC = () => {
   return (
     <>
       <StepContainer
+        // isFixButton
+        // isFixButtonAlwaysShow
         currentStep={currentStep}
         onPrevious={handlePrevious}
         onNext={handleNext}

@@ -17,7 +17,7 @@ import MyCard from '@/components/MyCard'
 import { ExclamationCircleOutlined, SearchOutlined } from '@ant-design/icons'
 import FilterLayout from './components/FilterLayout'
 import { AnyObject } from '@/types'
-import Wrapper from '@/components/container/Container'
+import Container from '@/components/container/Container'
 import Image from '@/components/Image'
 import { useAntd } from '@/provider/AntdProvider'
 import { useMainRef } from './layout'
@@ -56,7 +56,6 @@ const Home = () => {
 
   const { windowHeight } = useWindowInfo()
   const navigate = useNavigate()
-  const wrapRef = useRef<HTMLDivElement>(null)
   const mainRef = useMainRef()
   useUpdateEffect(() => {
     if (mainRef.current) {
@@ -298,7 +297,7 @@ const Home = () => {
 
   if (error) message.error(JSON.stringify(error.message, null, 2))
   return (
-    <Wrapper ref={wrapRef}>
+    <Container isFixButton>
       <MyCard>
         <FilterLayout setDataChangeInfo={setDataChangeInfo} />
         <div className=" flex justify-end gap-2">
@@ -341,7 +340,7 @@ const Home = () => {
           }}
         />
       </MyCard>
-    </Wrapper>
+    </Container>
   )
 }
 

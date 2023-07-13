@@ -30,7 +30,7 @@ const Page: React.FC = () => {
   }
 
   return (
-    <TabContainer>
+    <TabContainer isFixButton>
       <MyCard>
         <div className=" flex items-center justify-between">
           <h1 className="text-3xl">{id}</h1>

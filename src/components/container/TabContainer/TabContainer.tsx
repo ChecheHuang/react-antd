@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils'
 import { useRef, useState } from 'react'
 import { Switch } from 'antd'
 import Container from '../Container'
+import FixedButton from '@/components/button/FixedButton'
 interface TabContainerProps {
   mode?: 'horizontal' | 'vertical'
   className?: string
@@ -11,6 +12,8 @@ interface TabContainerProps {
   tabClassName?: string
   children: React.ReactNode
   isSwitch?: boolean
+  isFixButton?: boolean
+  isFixButtonAlwaysShow?: boolean
 }
 
 const TabContainer: React.FC<TabContainerProps> = ({
@@ -19,7 +22,9 @@ const TabContainer: React.FC<TabContainerProps> = ({
   tabsClassName,
   children,
   mode = 'horizontal',
-  isSwitch = false,
+  isSwitch,
+  isFixButton,
+  isFixButtonAlwaysShow,
 }) => {
   const [myMode, setMyMode] = useState(mode)
   const containerRef = useRef(null)
@@ -71,6 +76,8 @@ const TabContainer: React.FC<TabContainerProps> = ({
         )}
       </nav>
       <Container
+        isFixButtonAlwaysShow={isFixButtonAlwaysShow}
+        isFixButton={isFixButton}
         ref={containerRef}
         className={cn(
           'h-[calc(100vh-6rem)] overflow-y-auto scroll-smooth  scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-dark ',
