@@ -6,7 +6,7 @@ interface FromGroupProps extends HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode
   className?: string
   groupTitle?: string
-  custom?: boolean
+  unstyled?: boolean
   size?: string
 }
 
@@ -15,7 +15,7 @@ const Group: React.FC<FromGroupProps> = ({
   className,
   groupTitle,
   size,
-  custom = false,
+  unstyled = false,
   ...rest
 }) => {
   const { size: reduxSize } = useSelector((state) => state.theme)
@@ -33,7 +33,7 @@ const Group: React.FC<FromGroupProps> = ({
       <div
         className={cn(
           'grid gap-x-3',
-          !custom && 'mb-10 rounded-lg  p-2 shadow-lg shadow-slate-500/40 ',
+          !unstyled && 'mb-10 rounded-lg  p-2 shadow-lg shadow-slate-500/40 ',
           className,
           formGridCol
         )}

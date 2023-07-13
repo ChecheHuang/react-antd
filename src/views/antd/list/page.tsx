@@ -1,9 +1,9 @@
 import { CusResponse, cusGet, cusDelete } from '@/api/cus'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { Input, Table } from 'antd'
 import { useNavigate } from 'react-router-dom'
-import { useUpdateEffect, useWindowInfo } from '@/hooks/useHook'
+import { useWindowInfo } from '@/hooks/useHook'
 import DropdownButton from '@/components/button/DropdownButton'
 import { TableProps } from 'antd/lib/table/InternalTable'
 import ExtendedButton from '@/components/button/ExtendedButton'
@@ -20,7 +20,6 @@ import { AnyObject } from '@/types'
 import Wrapper from '@/components/container/Container'
 import Image from '@/components/Image'
 import { useAntd } from '@/provider/AntdProvider'
-import { useMainRef } from './layout'
 export interface DataChangeInfoType extends AnyObject {
   page: number
   size: number
@@ -56,18 +55,6 @@ const Home = () => {
 
   const { windowHeight } = useWindowInfo()
   const navigate = useNavigate()
-  const wrapRef = useRef<HTMLDivElement>(null)
-  const mainRef = useMainRef()
-  useUpdateEffect(() => {
-    if (mainRef.current) {
-      const element = mainRef.current
-      const scrollHeight = element.scrollHeight
-      element.scrollTo({
-        top: scrollHeight,
-        behavior: 'smooth',
-      })
-    }
-  }, [dataChangeInfo, mainRef])
 
   const handleChange: TableProps<CusResponse>['onChange'] = (
     pagination,
@@ -296,9 +283,9 @@ const Home = () => {
     }),
   }
 
-  if (error) message.error(JSON.stringify(error.message, null, 2))
+  if (error) message.error(JSON.stringify(error))
   return (
-    <Wrapper ref={wrapRef}>
+    <Wrapper>
       <MyCard>
         <FilterLayout setDataChangeInfo={setDataChangeInfo} />
         <div className=" flex justify-end gap-2">
