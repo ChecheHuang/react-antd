@@ -1,5 +1,5 @@
 //@ts-ignore
-import { AppstoreOutlined } from '@ant-design/icons'
+import { AppstoreOutlined, SlidersOutlined } from '@ant-design/icons'
 const meta = {
   layout: {
     name: 'antd控制台',
@@ -11,6 +11,6 @@ const meta = {
     name: '客戶列表',
     label: '客戶列表',
     isLazy: false,
-    icon: AppstoreOutlined,
+    icon: SlidersOutlined,
   },
 }

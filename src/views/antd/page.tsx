@@ -1,6 +1,6 @@
 import { CusResponse, cusGet, cusDelete } from '@/api/cus'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { Input, Table } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { useUpdateEffect, useWindowInfo } from '@/hooks/useHook'
@@ -250,9 +250,7 @@ const Home = () => {
             </ExtendedButton>
             <ExtendedButton
               onClick={() => {
-                console.log('查看')
-                message?.success('success')
-                // toast.success('success')
+                message.success('success')
               }}
               type="info"
             >

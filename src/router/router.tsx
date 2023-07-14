@@ -1,10 +1,11 @@
 import LazyLoad from './LazyLoad/LazyLoad'
-import { DownCircleOutlined } from '@ant-design/icons'
-import { QqOutlined } from '@ant-design/icons'
-import { AppstoreOutlined } from '@ant-design/icons'
-import { SlidersOutlined } from '@ant-design/icons'
-import { HeatMapOutlined } from '@ant-design/icons'
-
+import {
+  DownCircleOutlined,
+  QqOutlined,
+  AppstoreOutlined,
+  SlidersOutlined,
+  HeatMapOutlined,
+} from '@ant-design/icons'
 import LayoutAntd from '@/views/antd/layout'
 import Page from '@/views/page'
 import PageAntd from '@/views/antd/page'
@@ -23,7 +24,7 @@ const router: Route[] = [
         element: <PageAntd />,
         name: '客戶列表',
         label: '客戶列表',
-        icon: <AppstoreOutlined />,
+        icon: <SlidersOutlined />,
       },
       {
         path: '/antd/create',

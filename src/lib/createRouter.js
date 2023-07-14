@@ -85,6 +85,7 @@ async function printDirectoryContents(
       if (!filePath.endsWith('page') && !filePath.endsWith('layout')) continue
       const fileData = await readMeta(filePath)
       const fileDataImportString = fileData?.importString || ''
+
       if (!result.importString.includes(fileDataImportString)) {
         result.importString += fileDataImportString
       }
@@ -123,7 +124,22 @@ async function printDirectoryContents(
     }
   }
 }
+function extractIconNames(code) {
+  const regex = /import\s*{([\w\s,]+)}\s*from\s*'@ant-design\/icons'/g
+  const matches = code.match(regex)
+  let iconNames = []
 
+  if (matches) {
+    matches.forEach((match) => {
+      const iconRegex = /import\s*{([\w\s,]+)}\s*from\s*'@ant-design\/icons'/
+      const [, icons] = match.match(iconRegex)
+      const names = icons.split(',').map((name) => name.trim())
+      iconNames = iconNames.concat(names)
+    })
+  }
+
+  return [...new Set(iconNames)]
+}
 function parentKey(filePath, obj) {
   const keys = Object.keys(obj)
   for (let key of keys) {
@@ -273,7 +289,12 @@ function sortArr(arr) {
 
 const createRouter = async () => {
   const { arr, importString } = await createPathArray()
-  let initOutput = `import LazyLoad from "./LazyLoad/LazyLoad"\n${importString}`
+  const icons = extractIconNames(importString)
+  const iconInput =
+    icons.length === 0
+      ? ''
+      : `import { ${icons.join(',')} } from '@ant-design/icons'`
+  let initOutput = `import LazyLoad from "./LazyLoad/LazyLoad"\n${iconInput}`
 
   const { output, targetPath } = createOutput(sortArr(arr), initOutput)
 
