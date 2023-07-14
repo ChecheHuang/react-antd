@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import ExtendedButton from '@/components/button/ExtendedButton'
 
 const meta: Meta<typeof ExtendedButton> = {
-  title: 'Component/ExtendedButton',
+  title: 'Component/buttons/ExtendedButton',
   component: ExtendedButton,
   tags: ['autodocs'],
   argTypes: {},
