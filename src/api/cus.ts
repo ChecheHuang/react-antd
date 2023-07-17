@@ -6,7 +6,7 @@ export interface CusResponse {
   cus_number: string
   cus_email: string
   cus_idnumber: string
-  cus_birthday: string
+  cus_birthday: Date
   cus_age: number
   cus_remark: string
   cus_status: string
