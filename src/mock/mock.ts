@@ -1,5 +1,5 @@
 import Mock, { MockjsRequestOptions } from 'mockjs'
-import { parseQueryParams } from '@/lib/utils'
+import { fromPairs } from 'lodash'
 
 interface MockRequestMethodOptions extends MockjsRequestOptions {
   query?: { [key: string]: any }
@@ -48,4 +48,13 @@ function compareInputs(input1: string, input2: string): Record<string, string> {
     }
   })
   return output
+}
+function parseQueryParams(url: string) {
+  const queryString = url.split('?')[1]
+  if (!queryString) {
+    return {}
+  }
+  const pairs = queryString.split('&')
+  const pairsArray = pairs.map((pair) => pair.split('='))
+  return fromPairs(pairsArray)
 }
