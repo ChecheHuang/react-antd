@@ -8,6 +8,7 @@ import React, {
 import ExtendedButton from '../button/ExtendedButton'
 import { ArrowUpOutlined } from '@ant-design/icons'
 import { useMainRef } from '@/views/antd/layout'
+import { cn } from '@/lib/utils'
 
 interface TurnOnButtonProps {
   isAlwaysShow?: boolean
@@ -49,15 +50,25 @@ const TurnOnButton: React.ForwardRefRenderFunction<
   }, [handleScroll, containerRef, isAlwaysShow])
   return (
     <>
-      {showButton && (
+      {/* {showButton && (
         <ExtendedButton
-          className="fixed bottom-4 right-4  animate-in fade-in duration-150"
+          className="fixed bottom-4 right-4  animate-in fade-in duration-300"
           size="large"
           icon={<ArrowUpOutlined />}
           shape="circle"
           onClick={handleScrollToTop}
         />
-      )}
+      )} */}
+      <ExtendedButton
+        className={cn(
+          'fixed bottom-4 right-4  ease-in-out duration-300 opacity-0 pointer-events-none',
+          showButton && ' opacity-100 pointer-events-auto'
+        )}
+        size="large"
+        icon={<ArrowUpOutlined />}
+        shape="circle"
+        onClick={handleScrollToTop}
+      />
     </>
   )
 }
