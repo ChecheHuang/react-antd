@@ -12,7 +12,7 @@
     "cm": "git-cz",
     "cma": "git add . && git-cz",
     "mock": "vite --mode mock",
-    "route": "nodemon ./src/lib/createRouter.js",
+    "route": "node ./src/lib/createRouter.js",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
