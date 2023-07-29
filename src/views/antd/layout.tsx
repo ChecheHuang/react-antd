@@ -35,7 +35,7 @@ const Layout = () => {
 
 export default Layout
 export type ContextType = {
-  mainRef: any
+  mainRef: React.RefObject<HTMLDivElement> | null
 }
 export function useMainRef() {
   const { mainRef } = useOutletContext<ContextType>()
