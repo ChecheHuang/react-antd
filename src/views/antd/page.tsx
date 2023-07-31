@@ -58,7 +58,7 @@ const Home = () => {
   const navigate = useNavigate()
   const mainRef = useMainRef()
   useUpdateEffect(() => {
-    if (mainRef.current) {
+    if (mainRef?.current && mainRef !== null) {
       const element = mainRef.current
       const scrollHeight = element.scrollHeight
       element.scrollTo({
