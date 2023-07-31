@@ -6,9 +6,10 @@ const Breadcrumb: React.FC = () => {
   const location = useLocation()
   const pathSnippets = location.pathname.split('/').filter((i) => i)
   const flattenedRouter = flattenRoutes(router)
-  // console.log(flattenedRouter)
+  console.log(flattenedRouter)
   const extraBreadcrumbItems = pathSnippets.map((_, index) => {
     const url = `/${pathSnippets.slice(0, index + 1).join('/')}`
+
     const { name, icon } = getValueByPath(flattenedRouter, url)
     return {
       key: url,
@@ -22,7 +23,7 @@ const Breadcrumb: React.FC = () => {
   const breadcrumbItems = [
     {
       title: (
-        <Link to="/">
+        <Link to="/setting">
           <HomeOutlined />
         </Link>
       ),
@@ -40,7 +41,7 @@ function getValueByPath(map: Map<RegExp, any>, path: string) {
       return value
     }
   }
-  return null
+  return { name: '', icon: '' }
 }
 
 function flattenRoutes(
@@ -53,8 +54,12 @@ function flattenRoutes(
   routes.forEach((route) => {
     const { path, name, icon, children } = route
     const routeInfo = icon ? { name } : { name, icon }
+    const flattenedPath = new RegExp(`^${path.replace(/:[^/]+/g, '[^/]+')}$`)
 
     if (children) {
+      // Add current route's path to flattenedRoutes
+      flattenedRoutes.set(flattenedPath, routeInfo)
+
       const nestedRoutes = flattenRoutes(children)
       nestedRoutes.forEach((value, key) => {
         flattenedRoutes.set(key, value)
@@ -64,18 +69,15 @@ function flattenRoutes(
         // Route contains a regex pattern, delay processing
         delayedRoutes.push({ path, ...routeInfo })
       } else {
-        const flattenedPath = new RegExp(
-          `^${path.replace(/:[^/]+/g, '[^/]+')}$`
-        )
         flattenedRoutes.set(flattenedPath, routeInfo)
       }
     }
   })
 
   // Process delayed routes
-  delayedRoutes.forEach(({ path, name, icon }) => {
+  delayedRoutes.forEach(({ path, ...routeInfo }) => {
     const flattenedPath = new RegExp(`^${path.replace(/:[^/]+/g, '[^/]+')}$`)
-    flattenedRoutes.set(flattenedPath, { name, icon })
+    flattenedRoutes.set(flattenedPath, routeInfo)
   })
 
   return flattenedRoutes
