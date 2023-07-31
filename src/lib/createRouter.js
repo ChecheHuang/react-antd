@@ -221,7 +221,10 @@ import ${component} from "${path}"`
           }
           const key = parentKey(filePath, map)
           if (key) {
-            map[key].children.push(map[filePath])
+            map[key].children = addObjectByPathLength(
+              map[key].children,
+              map[filePath]
+            )
           } else {
             acc = [...acc, map[filePath]]
           }
@@ -231,7 +234,10 @@ import ${component} from "${path}"`
             map[routePath] = item
             acc = [...acc, map[routePath]]
           } else {
-            map[closestLayout].children.push(item)
+            map[closestLayout].children = addObjectByPathLength(
+              map[closestLayout].children,
+              item
+            )
           }
         },
       },
@@ -285,6 +291,21 @@ function sortArr(arr) {
     }
   })
   return finalArr
+}
+
+function addObjectByPathLength(arr, newObj) {
+  arr.sort((a, b) => a.path.length - b.path.length)
+  let insertIndex = arr.findIndex(
+    (obj) => obj.path.length >= newObj.path.length
+  )
+
+  if (insertIndex === -1) {
+    arr.push(newObj)
+  } else {
+    arr.splice(insertIndex, 0, newObj)
+  }
+
+  return arr
 }
 
 const createRouter = async () => {
