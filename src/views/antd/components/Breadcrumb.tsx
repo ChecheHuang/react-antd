@@ -2,14 +2,13 @@ import router, { Route } from '@/router/router'
 import { Link, useLocation } from 'react-router-dom'
 import { Breadcrumb as AntdBreadcrumb } from 'antd'
 import { HomeOutlined } from '@ant-design/icons'
+import React, { memo } from 'react'
 const Breadcrumb: React.FC = () => {
   const location = useLocation()
   const pathSnippets = location.pathname.split('/').filter((i) => i)
   const flattenedRouter = flattenRoutes(router)
-  console.log(flattenedRouter)
   const extraBreadcrumbItems = pathSnippets.map((_, index) => {
     const url = `/${pathSnippets.slice(0, index + 1).join('/')}`
-
     const { name, icon } = getValueByPath(flattenedRouter, url)
     return {
       key: url,
@@ -33,7 +32,7 @@ const Breadcrumb: React.FC = () => {
   return <AntdBreadcrumb items={breadcrumbItems} />
 }
 
-export default Breadcrumb
+export default memo(Breadcrumb)
 
 function getValueByPath(map: Map<RegExp, any>, path: string) {
   for (const [regex, value] of map.entries()) {
